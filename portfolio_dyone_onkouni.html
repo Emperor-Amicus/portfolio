@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dyone ONKOUNI — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --card: #16161e;
+    --accent: #00e5b4;
+    --accent2: #7c6aff;
+    --accent3: #ff6b35;
+    --text: #f0f0f5;
+    --muted: #8888a8;
+    --border: rgba(255,255,255,0.07);
+    --glow: rgba(0,229,180,0.15);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ── CURSOR ── */
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 10000;
+    transition: transform 0.15s ease;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid rgba(0,229,180,0.4);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 48px;
+    background: rgba(10,10,15,0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+  }
+  .nav-logo span { color: var(--text); }
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,180,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,180,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,229,180,0.08) 0%, transparent 70%);
+    top: 50%; left: 55%;
+    transform: translate(-50%, -50%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+    50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+  }
+
+  .hero-content {
+    position: relative;
+    max-width: 1100px;
+    width: 100%;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,229,180,0.07);
+    border: 1px solid rgba(0,229,180,0.2);
+    color: var(--accent);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    animation: fadeUp 0.8s ease both;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: blink 1.5s ease infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+  }
+
+  .hero-name {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(52px, 8vw, 96px);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -3px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+  .hero-name .first { display: block; color: var(--text); }
+  .hero-name .last {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--accent);
+  }
+
+  .hero-subtitle {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: clamp(18px, 2.5vw, 26px);
+    color: var(--muted);
+    margin-bottom: 48px;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+  .hero-subtitle strong { color: var(--accent2); font-style: normal; font-weight: 400; }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    animation: fadeUp 0.8s 0.3s ease both;
+    flex-wrap: wrap;
+  }
+  .stat { display: flex; flex-direction: column; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label { color: var(--muted); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px; left: 48px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    animation: fadeUp 1s 0.6s ease both;
+  }
+  .scroll-line {
+    width: 40px; height: 1px;
+    background: var(--muted);
+    position: relative;
+    overflow: hidden;
+  }
+  .scroll-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: translateX(-100%);
+    animation: scan 1.8s ease infinite;
+  }
+  @keyframes scan { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: 100px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 64px;
+  }
+  .section-num {
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: var(--text);
+  }
+
+  /* ── FORMATION ── */
+  .formation-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 40px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .formation-card:hover { border-color: rgba(0,229,180,0.3); }
+  .formation-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+  .formation-year {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+  .formation-degree {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .formation-school {
+    color: var(--accent2);
+    margin-bottom: 16px;
+    font-size: 13px;
+  }
+  .formation-desc { color: var(--muted); line-height: 1.8; }
+
+  .formation-modules {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .module-tag {
+    background: rgba(124,106,255,0.1);
+    border: 1px solid rgba(124,106,255,0.2);
+    color: var(--accent2);
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── SKILLS GRID ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .skill-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    transition: transform 0.2s ease, border-color 0.3s;
+    cursor: default;
+  }
+  .skill-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0,229,180,0.25);
+  }
+
+  .skill-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .skill-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .skill-desc { color: var(--muted); font-size: 12px; line-height: 1.8; margin-bottom: 20px; }
+
+  .skill-bar {
+    height: 3px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: visible;
+    position: relative;
+  }
+  .skill-fill {
+    height: 100%;
+    border-radius: 2px;
+    position: relative;
+    transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .skill-fill::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 50%;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: inherit;
+    transform: translate(50%, -50%);
+    box-shadow: 0 0 10px currentColor;
+  }
+  .skill-level {
+    position: absolute;
+    right: 12px;
+    top: -22px;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .s-green { background: linear-gradient(90deg, var(--accent), #00bfa5); }
+  .s-purple { background: linear-gradient(90deg, var(--accent2), #a78bfa); }
+  .s-orange { background: linear-gradient(90deg, var(--accent3), #ff9a5c); }
+
+  /* ── LOGICIELS ── */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+  }
+  .tool-chip {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 16px;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .tool-chip:hover {
+    border-color: rgba(0,229,180,0.3);
+    background: rgba(0,229,180,0.04);
+    transform: scale(1.03);
+  }
+  .tool-emoji { font-size: 24px; display: block; margin-bottom: 8px; }
+  .tool-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .tool-cat { color: var(--muted); font-size: 10px; margin-top: 4px; letter-spacing: 0.08em; }
+
+  /* ── PROJETS ── */
+  .projects-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .project-row {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px 36px;
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    align-items: center;
+    gap: 28px;
+    transition: all 0.25s;
+    cursor: default;
+  }
+  .project-row:hover {
+    border-color: rgba(0,229,180,0.25);
+    transform: translateX(6px);
+    background: rgba(0,229,180,0.02);
+  }
+  .project-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.05);
+    line-height: 1;
+  }
+  .project-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .project-desc { color: var(--muted); font-size: 12px; line-height: 1.7; }
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .ptag {
+    background: rgba(0,229,180,0.07);
+    border: 1px solid rgba(0,229,180,0.15);
+    color: var(--accent);
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .project-icon { font-size: 32px; }
+
+  /* ── QUALITÉS ── */
+  .qualities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .quality-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .quality-card:hover { border-color: rgba(124,106,255,0.3); }
+  .quality-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(124,106,255,0.06) 0%, transparent 70%);
+  }
+  .quality-icon { font-size: 22px; margin-bottom: 12px; display: block; }
+  .quality-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .quality-desc { color: var(--muted); font-size: 12px; line-height: 1.7; }
+
+  /* ── CONTACT ── */
+  #contact {
+    padding: 100px 48px;
+  }
+  .contact-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 64px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+  }
+  .contact-inner::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(ellipse 40% 40% at 50% 0%, rgba(0,229,180,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .contact-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 5vw, 60px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .contact-sub {
+    color: var(--muted);
+    margin-bottom: 48px;
+    font-size: 14px;
+    position: relative;
+  }
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+    font-weight: 600;
+  }
+  .btn-primary:hover { background: #00ffca; transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,229,180,0.3); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--accent2); color: var(--accent2); transform: translateY(-2px); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── FULL-WIDTH ── */
+  #hero, #contact, footer {
+    padding-left: max(48px, calc((100vw - 1200px) / 2));
+    padding-right: max(48px, calc((100vw - 1200px) / 2));
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    #hero, section, #contact, footer { padding-left: 24px; padding-right: 24px; }
+    .hero-stats { gap: 28px; }
+    .formation-card { grid-template-columns: 1fr; }
+    .project-row { grid-template-columns: 40px 1fr; }
+    .project-icon { display: none; }
+    .contact-inner { padding: 40px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">DO<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#formation">Formation</a></li>
+    <li><a href="#competences">Compétences</a></li>
+    <li><a href="#logiciels">Logiciels</a></li>
+    <li><a href="#projets">Projets</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero" style="max-width:100%; padding-top:120px;">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Disponible pour un stage · IDF</div>
+    <h1 class="hero-name">
+      <span class="first">Dyone</span>
+      <span class="last">ONKOUNI</span>
+    </h1>
+    <p class="hero-subtitle">
+      Étudiant en <strong>Génie Mécanique</strong> &amp;<br>
+      Simulation &amp; Réalité Virtuelle — Paris-Saclay Évry
+    </p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">BUT2</span>
+        <span class="stat-label">Niveau actuel</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">SRV</span>
+        <span class="stat-label">Spécialité</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">3D</span>
+        <span class="stat-label">Modélisation & VR</span>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- FORMATION -->
+<section id="formation" style="max-width:1200px; margin:0 auto;">
+  <div class="section-header">
+    <span class="section-num">01 /</span>
+    <h2 class="section-title">Formation</h2>
+  </div>
+  <div class="formation-card">
+    <div>
+      <div class="formation-year">2022 — 2025</div>
+      <br>
+      <div style="color:var(--muted); font-size:12px;">IUT d'Évry-Val-d'Essonne<br>Université Paris-Saclay</div>
+      <br>
+      <div style="color:var(--muted); font-size:12px; line-height:1.8;">
+        Évry-Courcouronnes<br>Île-de-France
+      </div>
+    </div>
+    <div>
+      <div class="formation-degree">BUT Génie Mécanique et Productique</div>
+      <div class="formation-school">Parcours Simulation &amp; Réalité Virtuelle (SRV)</div>
+      <p class="formation-desc">
+        Formation pluridisciplinaire alliant conception mécanique, modélisation numérique et technologies immersives. 
+        Le parcours SRV forme à la simulation physique, la CAO avancée et le développement d'environnements 
+        de réalité virtuelle appliqués à l'industrie et au prototypage numérique.
+      </p>
+      <div class="formation-modules">
+        <span class="module-tag">Conception CAO</span>
+        <span class="module-tag">Simulation numérique</span>
+        <span class="module-tag">Réalité virtuelle</span>
+        <span class="module-tag">Calcul par éléments finis</span>
+        <span class="module-tag">Fabrication additive</span>
+        <span class="module-tag">Mécanique des solides</span>
+        <span class="module-tag">Automatismes</span>
+        <span class="module-tag">Gestion de projet</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPÉTENCES -->
+<section id="competences" style="max-width:1200px; margin:0 auto;">
+  <div class="section-header">
+    <span class="section-num">02 /</span>
+    <h2 class="section-title">Compétences techniques</h2>
+  </div>
+  <div class="skills-grid">
+
+    <div class="skill-card">
+      <span class="skill-icon">🔩</span>
+      <div class="skill-name">Conception CAO / CAM</div>
+      <p class="skill-desc">Modélisation 3D de pièces mécaniques, assemblages, mises en plan et usinage numérique.</p>
+      <div class="skill-bar">
+        <span class="skill-level">Avancé</span>
+        <div class="skill-fill s-green" style="width:85%"></div>
+      </div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">🥽</span>
+      <div class="skill-name">Réalité Virtuelle & XR</div>
+      <p class="skill-desc">Création d'environnements immersifs, intégration de casques VR et interactions temps réel.</p>
+      <div class="skill-bar">
+        <span class="skill-level">Intermédiaire+</span>
+        <div class="skill-fill s-purple" style="width:72%"></div>
+      </div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">⚙️</span>
+      <div class="skill-name">Simulation & EF</div>
+      <p class="skill-desc">Analyse structurelle, thermique et dynamique par éléments finis. Calcul de contraintes et déformations.</p>
+      <div class="skill-bar">
+        <span class="skill-level">Intermédiaire</span>
+        <div class="skill-fill s-green" style="width:70%"></div>
+      </div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">🖥️</span>
+      <div class="skill-name">Modélisation 3D temps réel</div>
+      <p class="skill-desc">Optimisation de maillages pour moteurs temps réel, texturage PBR et export vers Unity/Unreal.</p>
+      <div class="skill-bar">
+        <span class="skill-level">Intermédiaire+</span>
+        <div class="skill-fill s-orange" style="width:68%"></div>
+      </div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">🏭</span>
+      <div class="skill-name">Fabrication additive</div>
+      <p class="skill-desc">Conception pour l'impression 3D (FDM, SLA), préparation des fichiers et post-traitement.</p>
+      <div class="skill-bar">
+        <span class="skill-level">Intermédiaire</span>
+        <div class="skill-fill s-purple" style="width:65%"></div>
+      </div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">📐</span>
+      <div class="skill-name">Dessin industriel</div>
+      <p class="skill-desc">Lecture et production de plans techniques normalisés, cotation fonctionnelle et tolérances géométriques.</p>
+      <div class="skill-bar">
+        <span class="skill-level">Avancé</span>
+        <div class="skill-fill s-green" style="width:80%"></div>
+      </div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">💻</span>
+      <div class="skill-name">Programmation</div>
+      <p class="skill-desc">Scripts Python pour l'automatisation, notions de C# pour le développement Unity/XR.</p>
+      <div class="skill-bar">
+        <span class="skill-level">Notions avancées</span>
+        <div class="skill-fill s-orange" style="width:55%"></div>
+      </div>
+    </div>
+
+    <div class="skill-card">
+      <span class="skill-icon">📊</span>
+      <div class="skill-name">Gestion de projet</div>
+      <p class="skill-desc">Méthodes agiles, planification, travail en équipe pluridisciplinaire et rédaction de rapports techniques.</p>
+      <div class="skill-bar">
+        <span class="skill-level">Intermédiaire</span>
+        <div class="skill-fill s-purple" style="width:70%"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- LOGICIELS -->
+<section id="logiciels" style="max-width:1200px; margin:0 auto;">
+  <div class="section-header">
+    <span class="section-num">03 /</span>
+    <h2 class="section-title">Logiciels & Outils</h2>
+  </div>
+  <div class="tools-grid">
+    <div class="tool-chip">
+      <span class="tool-emoji">🟦</span>
+      <div class="tool-name">SolidWorks</div>
+      <div class="tool-cat">CAO principale</div>
+    </div>
+    <div class="tool-chip">
+      <span class="tool-emoji">🔶</span>
+      <div class="tool-name">CATIA V5</div>
+      <div class="tool-cat">CAO avancée</div>
+    </div>
+    <div class="tool-chip">
+      <span class="tool-emoji">🟧</span>
+      <div class="tool-name">Fusion 360</div>
+      <div class="tool-cat">CAO / FAO</div>
+    </div>
+    <div class="tool-chip">
+      <span class="tool-emoji">🟩</span>
+      <div class="tool-name">ANSYS</div>
+      <div class="tool-cat">Simulation EF</div>
+    </div>
+    <div class="tool-chip">
+      <span class="tool-emoji">🎮</span>
+      <div class="tool-name">Unity</div>
+      <div class="tool-cat">Moteur VR / XR</div>
+    </div>
+    <div class="tool-chip">
+      <span class="tool-emoji">⬛</span>
+      <div class="tool-name">Unreal Engine</div>
+      <div class="tool-cat">Temps réel</div>
+    </div>
+    <div class="tool-chip">
+      <span class="tool-emoji">🧊</span>
+      <div class="tool-name">Blender</div>
+      <div class="tool-cat">3D / Rendu</div>
+    </div>
+    <div class="tool-chip">
+      <span class="tool-emoji">🐍</span>
+      <div class="tool-name">Python</div>
+      <div class="tool-cat">Scripts / Calcul</div>
+    </div>
+    <div class="tool-chip">
+      <span class="tool-emoji">📄</span>
+      <div class="tool-name">Office 365</div>
+      <div class="tool-cat">Bureautique</div>
+    </div>
+    <div class="tool-chip">
+      <span class="tool-emoji">🖨️</span>
+      <div class="tool-name">PrusaSlicer</div>
+      <div class="tool-cat">Impression 3D</div>
+    </div>
+    <div class="tool-chip">
+      <span class="tool-emoji">🌐</span>
+      <div class="tool-name">Keyshot</div>
+      <div class="tool-cat">Rendu photoréel</div>
+    </div>
+    <div class="tool-chip">
+      <span class="tool-emoji">📐</span>
+      <div class="tool-name">AutoCAD</div>
+      <div class="tool-cat">Dessin 2D</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJETS -->
+<section id="projets" style="max-width:1200px; margin:0 auto;">
+  <div class="section-header">
+    <span class="section-num">04 /</span>
+    <h2 class="section-title">Projets académiques</h2>
+  </div>
+  <div class="projects-list">
+
+    <div class="project-row">
+      <div class="project-num">01</div>
+      <div>
+        <div class="project-name">Conception d'un mécanisme de pince robotique</div>
+        <p class="project-desc">Modélisation complète d'une pince pour bras robotisé industriel : esquisse paramétrique, assemblage cinématique et simulation de mouvement. Génération des plans de fabrication.</p>
+        <div class="project-tags">
+          <span class="ptag">SolidWorks</span>
+          <span class="ptag">CAO</span>
+          <span class="ptag">Cinématique</span>
+          <span class="ptag">Plans 2D</span>
+        </div>
+      </div>
+      <div class="project-icon">🦾</div>
+    </div>
+
+    <div class="project-row">
+      <div class="project-num">02</div>
+      <div>
+        <div class="project-name">Environnement de Réalité Virtuelle industrielle</div>
+        <p class="project-desc">Développement d'une scène VR d'atelier de production sous Unity permettant la formation d'opérateurs. Intégration de modèles CAO exportés, interactions XR et retour haptique.</p>
+        <div class="project-tags">
+          <span class="ptag">Unity</span>
+          <span class="ptag">C#</span>
+          <span class="ptag">XR Toolkit</span>
+          <span class="ptag">VR</span>
+        </div>
+      </div>
+      <div class="project-icon">🥽</div>
+    </div>
+
+    <div class="project-row">
+      <div class="project-num">03</div>
+      <div>
+        <div class="project-name">Analyse par éléments finis d'une structure mécano-soudée</div>
+        <p class="project-desc">Étude de résistance mécanique d'un châssis métallique sous contraintes statiques et dynamiques. Optimisation géométrique pour réduction de masse tout en respectant les contraintes admissibles.</p>
+        <div class="project-tags">
+          <span class="ptag">ANSYS</span>
+          <span class="ptag">Simulation EF</span>
+          <span class="ptag">Contraintes</span>
+          <span class="ptag">Optimisation</span>
+        </div>
+      </div>
+      <div class="project-icon">⚙️</div>
+    </div>
+
+    <div class="project-row">
+      <div class="project-num">04</div>
+      <div>
+        <div class="project-name">Maquette numérique & impression 3D</div>
+        <p class="project-desc">Conception et fabrication d'un prototype fonctionnel par impression 3D FDM. Itérations de design, paramétrage des supports et post-traitement de surface.</p>
+        <div class="project-tags">
+          <span class="ptag">Fusion 360</span>
+          <span class="ptag">FDM</span>
+          <span class="ptag">Prototypage</span>
+          <span class="ptag">PrusaSlicer</span>
+        </div>
+      </div>
+      <div class="project-icon">🖨️</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- QUALITÉS -->
+<section id="qualites" style="max-width:1200px; margin:0 auto;">
+  <div class="section-header">
+    <span class="section-num">05 /</span>
+    <h2 class="section-title">Savoir-être</h2>
+  </div>
+  <div class="qualities-grid">
+    <div class="quality-card">
+      <span class="quality-icon">🎯</span>
+      <div class="quality-name">Rigueur</div>
+      <p class="quality-desc">Attention au détail dans chaque étape de conception et de simulation. Vérification systématique des résultats.</p>
+    </div>
+    <div class="quality-card">
+      <span class="quality-icon">🤝</span>
+      <div class="quality-name">Travail en équipe</div>
+      <p class="quality-desc">Expérience de projets pluridisciplinaires, communication efficace et contribution active aux objectifs communs.</p>
+    </div>
+    <div class="quality-card">
+      <span class="quality-icon">🧩</span>
+      <div class="quality-name">Résolution de problèmes</div>
+      <p class="quality-desc">Approche analytique et créative face aux défis techniques. Capacité à proposer des solutions innovantes.</p>
+    </div>
+    <div class="quality-card">
+      <span class="quality-icon">📚</span>
+      <div class="quality-name">Curiosité intellectuelle</div>
+      <p class="quality-desc">Veille active sur les nouvelles technologies : impression 4D, simulations haptiques, jumeaux numériques.</p>
+    </div>
+    <div class="quality-card">
+      <span class="quality-icon">⏱️</span>
+      <div class="quality-name">Gestion du temps</div>
+      <p class="quality-desc">Capacité à prioriser les tâches, respecter les délais et mener plusieurs projets simultanément.</p>
+    </div>
+    <div class="quality-card">
+      <span class="quality-icon">🗣️</span>
+      <div class="quality-name">Communication</div>
+      <p class="quality-desc">Aisance à l'oral pour la présentation de travaux techniques à des audiences variées.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<div id="contact" style="padding:60px max(48px, calc((100vw - 1200px) / 2));">
+  <div class="contact-inner">
+    <h2 class="contact-title">Travaillons<br><span style="color:var(--accent)">ensemble</span></h2>
+    <p class="contact-sub">À la recherche d'un stage ou d'une alternance · Île-de-France &amp; remote</p>
+    <div class="contact-links">
+      <a class="contact-btn btn-primary" href="mailto:dyone.onkouni@etud.univ-evry.fr">
+        ✉ dyone.onkouni@etud.univ-evry.fr
+      </a>
+      <a class="contact-btn btn-secondary" href="https://www.linkedin.com/in/" target="_blank">
+        💼 LinkedIn
+      </a>
+    </div>
+    <br><br>
+    <div style="color:var(--muted); font-size:11px; letter-spacing:0.1em;">
+      IUT d'Évry · Université Paris-Saclay · BUT GMP — SRV
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>© 2025 Dyone ONKOUNI</span>
+  <span>BUT2 GMP · Simulation &amp; Réalité Virtuelle · Paris-Saclay</span>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animCursor() {
+    cursor.style.left = mx - 5 + 'px';
+    cursor.style.top = my - 5 + 'px';
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx - 18 + 'px';
+    ring.style.top = ry - 18 + 'px';
+    requestAnimationFrame(animCursor);
+  }
+  animCursor();
+
+  document.querySelectorAll('a, button, .skill-card, .tool-chip, .project-row, .quality-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'scale(2)';
+      ring.style.transform = 'scale(1.4)';
+      ring.style.borderColor = 'rgba(0,229,180,0.6)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'scale(1)';
+      ring.style.transform = 'scale(1)';
+      ring.style.borderColor = 'rgba(0,229,180,0.4)';
+    });
+  });
+
+  // Animate skill bars on scroll
+  const bars = document.querySelectorAll('.skill-fill');
+  const widths = Array.from(bars).map(b => b.style.width);
+  bars.forEach(b => b.style.width = '0');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = Array.from(bars).indexOf(entry.target);
+        setTimeout(() => { entry.target.style.width = widths[idx]; }, 100);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  bars.forEach(b => observer.observe(b));
+
+  // Fade in sections
+  const sections = document.querySelectorAll('section, #contact > div');
+  const secObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.08 });
+  sections.forEach(s => {
+    s.style.opacity = '0';
+    s.style.transform = 'translateY(30px)';
+    s.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+    secObserver.observe(s);
+  });
+</script>
+</body>
+</html>
