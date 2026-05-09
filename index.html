@@ -1,461 +1,772 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dyone ONKOUNI — Portfolio</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#FF3B5C"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="ShortAI"/>
+<meta name="description" content="Générateur IA de Shorts YouTube et TikTok"/>
+<title>ShortAI Studio</title>
+<link rel="manifest" href="manifest.json"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap"/>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#0d0d0d;color:#f0f0f0;font-family:'DM Sans',sans-serif;overflow:hidden}
+
+:root{
+  --accent:#FF3B5C;
+  --accent2:#7B61FF;
+  --accent-glow:rgba(255,59,92,0.25);
+  --bg:#0d0d0d;
+  --bg2:#181818;
+  --bg3:#222222;
+  --border:rgba(255,255,255,0.08);
+  --border2:rgba(255,255,255,0.15);
+  --text:#f0f0f0;
+  --muted:#888;
+  --muted2:#555;
+  --radius:16px;
+  --safe-top:env(safe-area-inset-top, 0px);
+  --safe-bottom:env(safe-area-inset-bottom, 0px);
+}
+
+/* APP SHELL */
+.app-shell{display:flex;flex-direction:column;height:100vh;height:100dvh;max-width:480px;margin:0 auto;position:relative}
+
+/* STATUS BAR SPACER */
+.status-bar{height:calc(44px + var(--safe-top));background:#0d0d0d;flex-shrink:0;display:flex;align-items:flex-end;padding:0 20px 10px}
+.app-title-bar{display:flex;align-items:center;justify-content:space-between;width:100%}
+.app-logo-row{display:flex;align-items:center;gap:10px}
+.app-logo{width:30px;height:30px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center}
+.app-logo i{font-size:15px;color:white}
+.app-name{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--text)}
+.app-name span{font-size:10px;background:var(--accent);color:white;padding:2px 7px;border-radius:20px;font-weight:600;margin-left:6px;vertical-align:middle;font-family:'DM Sans',sans-serif}
+.install-btn{font-size:11px;padding:5px 12px;border:1px solid var(--border2);border-radius:20px;color:var(--muted);background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;display:none}
+.install-btn.show{display:block}
+
+/* MAIN SCROLL AREA */
+.main-scroll{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding:0 16px 20px}
+.main-scroll::-webkit-scrollbar{display:none}
+
+/* BOTTOM NAV */
+.bottom-nav{
+  height:calc(60px + var(--safe-bottom));
+  background:#111;
+  border-top:0.5px solid var(--border);
+  display:flex;
+  align-items:flex-start;
+  padding-top:8px;
+  flex-shrink:0;
+}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 0;border:none;background:transparent;cursor:pointer;color:var(--muted2);transition:color 0.2s}
+.nav-btn i{font-size:22px}
+.nav-btn span{font-size:10px;font-family:'DM Sans',sans-serif;font-weight:500}
+.nav-btn.active{color:var(--accent)}
+
+/* SECTIONS */
+.section{display:none;animation:fadeUp 0.25s ease}
+.section.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* CARDS & FORMS */
+.card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px}
+.card-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.card-title i{font-size:15px;color:var(--accent)}
+
+.field{margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.04em}
+.field input,.field textarea,.field select{
+  width:100%;padding:12px 14px;
+  border:0.5px solid var(--border2);
+  border-radius:12px;
+  background:var(--bg3);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  font-size:15px;
+  -webkit-appearance:none;
+  appearance:none;
+  transition:border-color 0.2s;
+}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.field select option{background:#222}
+.field textarea{resize:none;min-height:90px}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--accent)}
+
+/* CHIPS */
+.chip-row{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:7px 14px;border:0.5px solid var(--border2);border-radius:20px;font-size:13px;cursor:pointer;color:var(--muted);background:var(--bg3);transition:all 0.18s;font-family:'DM Sans',sans-serif;font-weight:500;-webkit-tap-highlight-color:transparent}
+.chip.on{background:var(--accent);color:white;border-color:var(--accent)}
+.chip.on2{background:var(--accent2);color:white;border-color:var(--accent2)}
+
+/* PLATFORM PILLS */
+.plat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.plat-pill{padding:12px;border:0.5px solid var(--border2);border-radius:14px;background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--muted);transition:all 0.2s}
+.plat-pill.yt-on{background:#FF0000;color:white;border-color:#FF0000}
+.plat-pill.tk-on{background:#111;color:white;border-color:#555}
+.plat-pill i{font-size:18px}
+
+/* GENERATE BUTTON */
+.btn-gen{
+  width:100%;padding:16px;
+  background:var(--accent);color:white;
+  border:none;border-radius:14px;
+  font-family:'Syne',sans-serif;font-size:16px;font-weight:800;
+  cursor:pointer;margin-top:6px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:opacity 0.2s,transform 0.15s;
+  box-shadow:0 4px 20px var(--accent-glow);
+}
+.btn-gen:active{transform:scale(0.98);opacity:0.9}
+.btn-gen:disabled{opacity:0.4;box-shadow:none}
+.btn-gen.purple{background:var(--accent2);box-shadow:0 4px 20px rgba(123,97,255,0.3)}
+
+/* LOADING */
+.loading{display:none;align-items:center;gap:10px;padding:18px 0;color:var(--muted);font-size:14px}
+.loading.show{display:flex}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.2s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:0.2s}
+.dot:nth-child(3){animation-delay:0.4s}
+@keyframes blink{0%,80%,100%{opacity:0.15;transform:scale(0.7)}40%{opacity:1;transform:scale(1)}}
+
+.progress{height:3px;background:var(--bg3);border-radius:2px;margin:10px 0;display:none;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);width:0%;transition:width 0.4s ease;border-radius:2px}
+.progress.show{display:block}
+
+/* RESULTS */
+.result-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);margin-top:14px;overflow:hidden}
+.result-header{padding:12px 16px;background:var(--bg3);border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.result-header span{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text)}
+.copy-btn{padding:5px 12px;border:0.5px solid var(--border2);border-radius:8px;background:transparent;color:var(--muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:4px;transition:all 0.2s}
+.copy-btn:active{color:var(--accent);border-color:var(--accent)}
+.result-body{padding:16px}
+.block-label{font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;font-family:'Syne',sans-serif}
+.block-label.purple{color:var(--accent2)}
+.block-text{font-size:14px;line-height:1.7;color:var(--text);margin-bottom:14px}
+.block-text:last-child{margin-bottom:0}
+.block-muted{color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:14px}
+
+/* IDEA CARDS */
+.idea-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.idea-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;transition:all 0.2s;-webkit-tap-highlight-color:transparent}
+.idea-card:active{transform:scale(0.97)}
+.idea-card.picked{border-color:var(--accent);background:rgba(255,59,92,0.06)}
+.idea-emoji{font-size:24px;margin-bottom:8px;display:block}
+.idea-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.4}
+.idea-angle{font-size:11px;color:var(--accent);font-weight:500;margin-top:6px}
+
+/* TAGS */
+.tags-wrap{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:11px;padding:4px 10px;border-radius:20px;background:var(--bg3);color:var(--muted);border:0.5px solid var(--border)}
+
+/* VIRAL TIP BOX */
+.tip-box{background:rgba(255,59,92,0.07);border:0.5px solid rgba(255,59,92,0.2);border-radius:14px;padding:14px;margin-top:10px}
+.tip-box .block-label{color:var(--accent)}
+
+/* HOME SCREEN */
+.home-hero{text-align:center;padding:30px 0 20px}
+.hero-icon{width:72px;height:72px;background:var(--accent);border-radius:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 8px 30px var(--accent-glow)}
+.hero-icon i{font-size:34px;color:white}
+.hero-title{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;line-height:1.2;margin-bottom:8px}
+.hero-title em{color:var(--accent);font-style:normal}
+.hero-sub{font-size:14px;color:var(--muted);line-height:1.6;max-width:300px;margin:0 auto}
+
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:20px 0}
+.qa-btn{background:var(--bg2);border:0.5px solid var(--border);border-radius:14px;padding:16px;cursor:pointer;text-align:left;transition:all 0.2s;-webkit-tap-highlight-color:transparent}
+.qa-btn:active{transform:scale(0.97)}
+.qa-btn i{font-size:22px;color:var(--accent);display:block;margin-bottom:8px}
+.qa-btn.purple i{color:var(--accent2)}
+.qa-btn strong{display:block;font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;font-family:'Syne',sans-serif}
+.qa-btn span{font-size:12px;color:var(--muted)}
+
+.stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:16px 0}
+.stat{background:var(--bg2);border:0.5px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+.stat-num{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--accent)}
+.stat-label{font-size:10px;color:var(--muted);margin-top:2px}
+
+.section-heading{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--text);margin:20px 0 12px}
+
+/* CHAR COUNTER */
+.char-count{font-size:11px;color:var(--muted2);text-align:right;margin-top:4px}
+
+/* DIVIDER */
+.divider{height:0.5px;background:var(--border);margin:16px 0}
+</style>
 </head>
 <body>
+<div class="app-shell">
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
-
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">DO<span>.</span></div>
-  <ul class="nav-links">
-    <li><a href="#formation">Formation</a></li>
-    <li><a href="#competences">Compétences</a></li>
-    <li><a href="#logiciels">Logiciels</a></li>
-    <li><a href="#projets">Projets</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-</nav>
-
-<!-- HERO -->
-<section id="hero" style="max-width:100%; padding-top:120px;">
-  <div class="hero-grid-bg"></div>
-  <div class="hero-glow"></div>
-  <div class="hero-content">
-    <div class="hero-tag">Disponible pour un stage · IDF</div>
-    <h1 class="hero-name">
-      <span class="first">Dyone</span>
-      <span class="last">ONKOUNI</span>
-    </h1>
-    <p class="hero-subtitle">
-      Étudiant en <strong>Génie Mécanique</strong> &amp;<br>
-      Simulation &amp; Réalité Virtuelle — Paris-Saclay Évry
-    </p>
-    <div class="hero-stats">
-      <div class="stat">
-        <span class="stat-num">BUT2</span>
-        <span class="stat-label">Niveau actuel</span>
+  <!-- TOP BAR -->
+  <div class="status-bar">
+    <div class="app-title-bar">
+      <div class="app-logo-row">
+        <div class="app-logo"><i class="ti ti-player-play"></i></div>
+        <div class="app-name">ShortAI <span>IA</span></div>
       </div>
-      <div class="stat">
-        <span class="stat-num">SRV</span>
-        <span class="stat-label">Spécialité</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num">3D</span>
-        <span class="stat-label">Modélisation & VR</span>
-      </div>
+      <button class="install-btn" id="install-btn" onclick="installApp()">+ Installer</button>
     </div>
   </div>
-  <div class="scroll-hint">
-    <div class="scroll-line"></div>
-    Scroll
-  </div>
-</section>
 
-<!-- FORMATION -->
-<section id="formation" style="max-width:1200px; margin:0 auto;">
-  <div class="section-header">
-    <span class="section-num">01 /</span>
-    <h2 class="section-title">Formation</h2>
-  </div>
-  <div class="formation-card">
-    <div>
-      <div class="formation-year">2022 — 2025</div>
-      <br>
-      <div style="color:var(--muted); font-size:12px;">IUT d'Évry-Val-d'Essonne<br>Université Paris-Saclay</div>
-      <br>
-      <div style="color:var(--muted); font-size:12px; line-height:1.8;">
-        Évry-Courcouronnes<br>Île-de-France
+  <!-- MAIN CONTENT -->
+  <div class="main-scroll" id="main-scroll">
+
+    <!-- HOME -->
+    <div class="section active" id="sec-home">
+      <div class="home-hero">
+        <div class="hero-icon"><i class="ti ti-sparkles"></i></div>
+        <h1 class="hero-title">Créez des shorts<br/><em>viraux avec l'IA</em></h1>
+        <p class="hero-sub">Scripts, titres, hashtags et stratégie — tout automatisé pour YouTube Shorts et TikTok</p>
       </div>
-    </div>
-    <div>
-      <div class="formation-degree">BUT Génie Mécanique et Productique</div>
-      <div class="formation-school">Parcours Simulation &amp; Réalité Virtuelle (SRV)</div>
-      <p class="formation-desc">
-        Formation pluridisciplinaire alliant conception mécanique, modélisation numérique et technologies immersives. 
-        Le parcours SRV forme à la simulation physique, la CAO avancée et le développement d'environnements 
-        de réalité virtuelle appliqués à l'industrie et au prototypage numérique.
-      </p>
-      <div class="formation-modules">
-        <span class="module-tag">Conception CAO</span>
-        <span class="module-tag">Simulation numérique</span>
-        <span class="module-tag">Réalité virtuelle</span>
-        <span class="module-tag">Calcul par éléments finis</span>
-        <span class="module-tag">Fabrication additive</span>
-        <span class="module-tag">Mécanique des solides</span>
-        <span class="module-tag">Automatismes</span>
-        <span class="module-tag">Gestion de projet</span>
+
+      <div class="stat-row">
+        <div class="stat"><div class="stat-num">3</div><div class="stat-label">Outils IA</div></div>
+        <div class="stat"><div class="stat-num">60s</div><div class="stat-label">Durée max</div></div>
+        <div class="stat"><div class="stat-num">30</div><div class="stat-label">Hashtags</div></div>
       </div>
-    </div>
-  </div>
-</section>
 
-<!-- COMPÉTENCES -->
-<section id="competences" style="max-width:1200px; margin:0 auto;">
-  <div class="section-header">
-    <span class="section-num">02 /</span>
-    <h2 class="section-title">Compétences techniques</h2>
-  </div>
-  <div class="skills-grid">
-
-    <div class="skill-card">
-      <span class="skill-icon">🔩</span>
-      <div class="skill-name">Conception CAO / CAM</div>
-      <p class="skill-desc">Modélisation 3D de pièces mécaniques, assemblages, mises en plan et usinage numérique.</p>
-      <div class="skill-bar">
-        <span class="skill-level">Avancé</span>
-        <div class="skill-fill s-green" style="width:85%"></div>
+      <div class="section-heading">Que voulez-vous créer ?</div>
+      <div class="quick-actions">
+        <button class="qa-btn" onclick="goTo('ideas')">
+          <i class="ti ti-bulb"></i>
+          <strong>Idées</strong>
+          <span>Génère 4 concepts</span>
+        </button>
+        <button class="qa-btn" onclick="goTo('script')">
+          <i class="ti ti-script"></i>
+          <strong>Script</strong>
+          <span>Script complet</span>
+        </button>
+        <button class="qa-btn purple" onclick="goTo('package')" style="grid-column:span 2">
+          <i class="ti ti-package" style="color:var(--accent2)"></i>
+          <strong>Package complet</strong>
+          <span>Script + titres + SEO + hashtags en une fois</span>
+        </button>
       </div>
-    </div>
 
-    <div class="skill-card">
-      <span class="skill-icon">🥽</span>
-      <div class="skill-name">Réalité Virtuelle & XR</div>
-      <p class="skill-desc">Création d'environnements immersifs, intégration de casques VR et interactions temps réel.</p>
-      <div class="skill-bar">
-        <span class="skill-level">Intermédiaire+</span>
-        <div class="skill-fill s-purple" style="width:72%"></div>
-      </div>
-    </div>
-
-    <div class="skill-card">
-      <span class="skill-icon">⚙️</span>
-      <div class="skill-name">Simulation & EF</div>
-      <p class="skill-desc">Analyse structurelle, thermique et dynamique par éléments finis. Calcul de contraintes et déformations.</p>
-      <div class="skill-bar">
-        <span class="skill-level">Intermédiaire</span>
-        <div class="skill-fill s-green" style="width:70%"></div>
-      </div>
-    </div>
-
-    <div class="skill-card">
-      <span class="skill-icon">🖥️</span>
-      <div class="skill-name">Modélisation 3D temps réel</div>
-      <p class="skill-desc">Optimisation de maillages pour moteurs temps réel, texturage PBR et export vers Unity/Unreal.</p>
-      <div class="skill-bar">
-        <span class="skill-level">Intermédiaire+</span>
-        <div class="skill-fill s-orange" style="width:68%"></div>
-      </div>
-    </div>
-
-    <div class="skill-card">
-      <span class="skill-icon">🏭</span>
-      <div class="skill-name">Fabrication additive</div>
-      <p class="skill-desc">Conception pour l'impression 3D (FDM, SLA), préparation des fichiers et post-traitement.</p>
-      <div class="skill-bar">
-        <span class="skill-level">Intermédiaire</span>
-        <div class="skill-fill s-purple" style="width:65%"></div>
-      </div>
-    </div>
-
-    <div class="skill-card">
-      <span class="skill-icon">📐</span>
-      <div class="skill-name">Dessin industriel</div>
-      <p class="skill-desc">Lecture et production de plans techniques normalisés, cotation fonctionnelle et tolérances géométriques.</p>
-      <div class="skill-bar">
-        <span class="skill-level">Avancé</span>
-        <div class="skill-fill s-green" style="width:80%"></div>
-      </div>
-    </div>
-
-    <div class="skill-card">
-      <span class="skill-icon">💻</span>
-      <div class="skill-name">Programmation</div>
-      <p class="skill-desc">Scripts Python pour l'automatisation, notions de C# pour le développement Unity/XR.</p>
-      <div class="skill-bar">
-        <span class="skill-level">Notions avancées</span>
-        <div class="skill-fill s-orange" style="width:55%"></div>
-      </div>
-    </div>
-
-    <div class="skill-card">
-      <span class="skill-icon">📊</span>
-      <div class="skill-name">Gestion de projet</div>
-      <p class="skill-desc">Méthodes agiles, planification, travail en équipe pluridisciplinaire et rédaction de rapports techniques.</p>
-      <div class="skill-bar">
-        <span class="skill-level">Intermédiaire</span>
-        <div class="skill-fill s-purple" style="width:70%"></div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- LOGICIELS -->
-<section id="logiciels" style="max-width:1200px; margin:0 auto;">
-  <div class="section-header">
-    <span class="section-num">03 /</span>
-    <h2 class="section-title">Logiciels & Outils</h2>
-  </div>
-  <div class="tools-grid">
-    <div class="tool-chip">
-      <span class="tool-emoji">🟦</span>
-      <div class="tool-name">SolidWorks</div>
-      <div class="tool-cat">CAO principale</div>
-    </div>
-    <div class="tool-chip">
-      <span class="tool-emoji">🔶</span>
-      <div class="tool-name">CATIA V5</div>
-      <div class="tool-cat">CAO avancée</div>
-    </div>
-    <div class="tool-chip">
-      <span class="tool-emoji">🟧</span>
-      <div class="tool-name">Fusion 360</div>
-      <div class="tool-cat">CAO / FAO</div>
-    </div>
-    <div class="tool-chip">
-      <span class="tool-emoji">🟩</span>
-      <div class="tool-name">ANSYS</div>
-      <div class="tool-cat">Simulation EF</div>
-    </div>
-    <div class="tool-chip">
-      <span class="tool-emoji">🎮</span>
-      <div class="tool-name">Unity</div>
-      <div class="tool-cat">Moteur VR / XR</div>
-    </div>
-    <div class="tool-chip">
-      <span class="tool-emoji">⬛</span>
-      <div class="tool-name">Unreal Engine</div>
-      <div class="tool-cat">Temps réel</div>
-    </div>
-    <div class="tool-chip">
-      <span class="tool-emoji">🧊</span>
-      <div class="tool-name">Blender</div>
-      <div class="tool-cat">3D / Rendu</div>
-    </div>
-    <div class="tool-chip">
-      <span class="tool-emoji">🐍</span>
-      <div class="tool-name">Python</div>
-      <div class="tool-cat">Scripts / Calcul</div>
-    </div>
-    <div class="tool-chip">
-      <span class="tool-emoji">📄</span>
-      <div class="tool-name">Office 365</div>
-      <div class="tool-cat">Bureautique</div>
-    </div>
-    <div class="tool-chip">
-      <span class="tool-emoji">🖨️</span>
-      <div class="tool-name">PrusaSlicer</div>
-      <div class="tool-cat">Impression 3D</div>
-    </div>
-    <div class="tool-chip">
-      <span class="tool-emoji">🌐</span>
-      <div class="tool-name">Keyshot</div>
-      <div class="tool-cat">Rendu photoréel</div>
-    </div>
-    <div class="tool-chip">
-      <span class="tool-emoji">📐</span>
-      <div class="tool-name">AutoCAD</div>
-      <div class="tool-cat">Dessin 2D</div>
-    </div>
-  </div>
-</section>
-
-<!-- PROJETS -->
-<section id="projets" style="max-width:1200px; margin:0 auto;">
-  <div class="section-header">
-    <span class="section-num">04 /</span>
-    <h2 class="section-title">Projets académiques</h2>
-  </div>
-  <div class="projects-list">
-
-    <div class="project-row">
-      <div class="project-num">01</div>
-      <div>
-        <div class="project-name">Conception d'un mécanisme de pince robotique</div>
-        <p class="project-desc">Modélisation complète d'une pince pour bras robotisé industriel : esquisse paramétrique, assemblage cinématique et simulation de mouvement. Génération des plans de fabrication.</p>
-        <div class="project-tags">
-          <span class="ptag">SolidWorks</span>
-          <span class="ptag">CAO</span>
-          <span class="ptag">Cinématique</span>
-          <span class="ptag">Plans 2D</span>
+      <div class="card" style="margin-top:4px">
+        <div class="card-title"><i class="ti ti-info-circle"></i> Comment ça marche</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.8">
+          1. Choisissez votre outil<br/>
+          2. Décrivez votre sujet<br/>
+          3. L'IA génère votre contenu<br/>
+          4. Copiez et publiez !
         </div>
       </div>
-      <div class="project-icon">🦾</div>
     </div>
 
-    <div class="project-row">
-      <div class="project-num">02</div>
-      <div>
-        <div class="project-name">Environnement de Réalité Virtuelle industrielle</div>
-        <p class="project-desc">Développement d'une scène VR d'atelier de production sous Unity permettant la formation d'opérateurs. Intégration de modèles CAO exportés, interactions XR et retour haptique.</p>
-        <div class="project-tags">
-          <span class="ptag">Unity</span>
-          <span class="ptag">C#</span>
-          <span class="ptag">XR Toolkit</span>
-          <span class="ptag">VR</span>
+    <!-- IDEAS -->
+    <div class="section" id="sec-ideas">
+      <div class="section-heading" style="margin-top:16px">💡 Générateur d'idées</div>
+
+      <div class="card">
+        <div class="card-title"><i class="ti ti-target"></i> Plateformes</div>
+        <div class="plat-row">
+          <button class="plat-pill yt-on" id="p-yt" onclick="toggleP('yt')"><i class="ti ti-brand-youtube"></i> YouTube</button>
+          <button class="plat-pill tk-on" id="p-tk" onclick="toggleP('tk')"><i class="ti ti-brand-tiktok"></i> TikTok</button>
+        </div>
+
+        <div class="field">
+          <label>Niche</label>
+          <select id="i-niche">
+            <option value="">Sélectionnez...</option>
+            <option value="finance">💰 Finance & Business</option>
+            <option value="tech">💻 Tech & IA</option>
+            <option value="fitness">💪 Fitness & Santé</option>
+            <option value="food">🍕 Food & Cuisine</option>
+            <option value="travel">✈️ Voyage & Lifestyle</option>
+            <option value="education">📚 Éducation & Astuces</option>
+            <option value="comedy">😂 Humour & Entertainment</option>
+            <option value="beauty">💄 Beauté & Mode</option>
+            <option value="gaming">🎮 Gaming</option>
+            <option value="motivation">🔥 Motivation & Dev perso</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Sujet</label>
+          <textarea id="i-subject" placeholder="Ex: 5 astuces pour économiser 500€/mois sans effort..." rows="3" maxlength="200" oninput="updateCount('i-subject','i-count')"></textarea>
+          <div class="char-count" id="i-count">0/200</div>
+        </div>
+
+        <div class="field">
+          <label>Ton</label>
+          <div class="chip-row" id="tone-group">
+            <button class="chip on" data-v="punchy">⚡ Punchy</button>
+            <button class="chip" data-v="educatif">🎓 Éducatif</button>
+            <button class="chip" data-v="storytelling">📖 Story</button>
+            <button class="chip" data-v="choc">😱 Choc</button>
+            <button class="chip" data-v="humour">😂 Humour</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Durée</label>
+          <div class="chip-row" id="dur-group">
+            <button class="chip on" data-v="30">30s</button>
+            <button class="chip" data-v="45">45s</button>
+            <button class="chip" data-v="60">60s</button>
+          </div>
+        </div>
+
+        <button class="btn-gen" id="btn-ideas" onclick="genIdeas()">
+          <i class="ti ti-sparkles"></i> Générer des idées
+        </button>
+      </div>
+
+      <div class="loading" id="ld-ideas"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span>Génération en cours...</span></div>
+      <div id="ideas-out"></div>
+    </div>
+
+    <!-- SCRIPT -->
+    <div class="section" id="sec-script">
+      <div class="section-heading" style="margin-top:16px">📝 Générateur de script</div>
+
+      <div class="card">
+        <div class="field">
+          <label>Sujet du script</label>
+          <textarea id="s-subject" placeholder="Décrivez votre sujet ou collez une idée..." rows="4"></textarea>
+        </div>
+
+        <div class="field">
+          <label>Format narratif</label>
+          <div class="chip-row" id="fmt-group">
+            <button class="chip on" data-v="hook-content-cta">Hook → CTA</button>
+            <button class="chip" data-v="problem-solution">Problème → Solution</button>
+            <button class="chip" data-v="liste">Top Liste</button>
+            <button class="chip" data-v="storytelling">Storytelling</button>
+            <button class="chip" data-v="tutorial">Tutoriel</button>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field">
+            <label>Durée</label>
+            <select id="s-dur">
+              <option value="30">30 secondes</option>
+              <option value="45">45 secondes</option>
+              <option value="60" selected>60 secondes</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Plateforme</label>
+            <select id="s-plat">
+              <option value="both">YouTube + TikTok</option>
+              <option value="youtube">YouTube Shorts</option>
+              <option value="tiktok">TikTok</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Instructions (optionnel)</label>
+          <input type="text" id="s-inst" placeholder="Ex: inclure une stat choc, finir par une question..."/>
+        </div>
+
+        <button class="btn-gen" id="btn-script" onclick="genScript()">
+          <i class="ti ti-pencil"></i> Générer le script
+        </button>
+      </div>
+
+      <div class="loading" id="ld-script"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span>Rédaction du script...</span></div>
+      <div class="progress" id="pr-script"><div class="progress-fill" id="pf-script"></div></div>
+      <div id="script-out"></div>
+    </div>
+
+    <!-- PACKAGE -->
+    <div class="section" id="sec-package">
+      <div class="section-heading" style="margin-top:16px">📦 Package complet</div>
+
+      <div class="card" style="background:rgba(123,97,255,0.06);border-color:rgba(123,97,255,0.2)">
+        <div style="font-size:13px;color:var(--muted);line-height:1.7">
+          <i class="ti ti-info-circle" style="color:var(--accent2);vertical-align:-2px"></i>
+          Génère en une fois : script, titres, descriptions SEO, 30 hashtags, idée de miniature et conseil viralité.
         </div>
       </div>
-      <div class="project-icon">🥽</div>
-    </div>
 
-    <div class="project-row">
-      <div class="project-num">03</div>
-      <div>
-        <div class="project-name">Analyse par éléments finis d'une structure mécano-soudée</div>
-        <p class="project-desc">Étude de résistance mécanique d'un châssis métallique sous contraintes statiques et dynamiques. Optimisation géométrique pour réduction de masse tout en respectant les contraintes admissibles.</p>
-        <div class="project-tags">
-          <span class="ptag">ANSYS</span>
-          <span class="ptag">Simulation EF</span>
-          <span class="ptag">Contraintes</span>
-          <span class="ptag">Optimisation</span>
+      <div class="card">
+        <div class="field">
+          <label>Sujet du short</label>
+          <textarea id="pk-subject" placeholder="Décrivez votre short en détail..." rows="4"></textarea>
         </div>
-      </div>
-      <div class="project-icon">⚙️</div>
-    </div>
-
-    <div class="project-row">
-      <div class="project-num">04</div>
-      <div>
-        <div class="project-name">Maquette numérique & impression 3D</div>
-        <p class="project-desc">Conception et fabrication d'un prototype fonctionnel par impression 3D FDM. Itérations de design, paramétrage des supports et post-traitement de surface.</p>
-        <div class="project-tags">
-          <span class="ptag">Fusion 360</span>
-          <span class="ptag">FDM</span>
-          <span class="ptag">Prototypage</span>
-          <span class="ptag">PrusaSlicer</span>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="field">
+            <label>Niche</label>
+            <select id="pk-niche">
+              <option value="">Générale</option>
+              <option value="finance">💰 Finance</option>
+              <option value="tech">💻 Tech</option>
+              <option value="fitness">💪 Fitness</option>
+              <option value="food">🍕 Food</option>
+              <option value="travel">✈️ Voyage</option>
+              <option value="education">📚 Éducation</option>
+              <option value="comedy">😂 Humour</option>
+              <option value="beauty">💄 Beauté</option>
+              <option value="gaming">🎮 Gaming</option>
+              <option value="motivation">🔥 Motivation</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Durée</label>
+            <select id="pk-dur">
+              <option value="30">30 secondes</option>
+              <option value="45">45 secondes</option>
+              <option value="60" selected>60 secondes</option>
+            </select>
+          </div>
         </div>
+
+        <button class="btn-gen purple" id="btn-pkg" onclick="genPackage()">
+          <i class="ti ti-package"></i> Générer le package
+        </button>
       </div>
-      <div class="project-icon">🖨️</div>
+
+      <div class="loading" id="ld-pkg"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span>Création du package...</span></div>
+      <div class="progress" id="pr-pkg"><div class="progress-fill" id="pf-pkg"></div></div>
+      <div id="pkg-out"></div>
     </div>
 
-  </div>
-</section>
+  </div><!-- /main-scroll -->
 
-<!-- QUALITÉS -->
-<section id="qualites" style="max-width:1200px; margin:0 auto;">
-  <div class="section-header">
-    <span class="section-num">05 /</span>
-    <h2 class="section-title">Savoir-être</h2>
-  </div>
-  <div class="qualities-grid">
-    <div class="quality-card">
-      <span class="quality-icon">🎯</span>
-      <div class="quality-name">Rigueur</div>
-      <p class="quality-desc">Attention au détail dans chaque étape de conception et de simulation. Vérification systématique des résultats.</p>
-    </div>
-    <div class="quality-card">
-      <span class="quality-icon">🤝</span>
-      <div class="quality-name">Travail en équipe</div>
-      <p class="quality-desc">Expérience de projets pluridisciplinaires, communication efficace et contribution active aux objectifs communs.</p>
-    </div>
-    <div class="quality-card">
-      <span class="quality-icon">🧩</span>
-      <div class="quality-name">Résolution de problèmes</div>
-      <p class="quality-desc">Approche analytique et créative face aux défis techniques. Capacité à proposer des solutions innovantes.</p>
-    </div>
-    <div class="quality-card">
-      <span class="quality-icon">📚</span>
-      <div class="quality-name">Curiosité intellectuelle</div>
-      <p class="quality-desc">Veille active sur les nouvelles technologies : impression 4D, simulations haptiques, jumeaux numériques.</p>
-    </div>
-    <div class="quality-card">
-      <span class="quality-icon">⏱️</span>
-      <div class="quality-name">Gestion du temps</div>
-      <p class="quality-desc">Capacité à prioriser les tâches, respecter les délais et mener plusieurs projets simultanément.</p>
-    </div>
-    <div class="quality-card">
-      <span class="quality-icon">🗣️</span>
-      <div class="quality-name">Communication</div>
-      <p class="quality-desc">Aisance à l'oral pour la présentation de travaux techniques à des audiences variées.</p>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<div id="contact" style="padding:60px max(48px, calc((100vw - 1200px) / 2));">
-  <div class="contact-inner">
-    <h2 class="contact-title">Travaillons<br><span style="color:var(--accent)">ensemble</span></h2>
-    <p class="contact-sub">À la recherche d'un stage ou d'une alternance · Île-de-France &amp; remote</p>
-    <div class="contact-links">
-      <a class="contact-btn btn-primary" href="mailto:dyone.onkouni@etud.univ-evry.fr">
-        ✉ dyone.onkouni@etud.univ-evry.fr
-      </a>
-      <a class="contact-btn btn-secondary" href="https://www.linkedin.com/in/" target="_blank">
-        💼 LinkedIn
-      </a>
-    </div>
-    <br><br>
-    <div style="color:var(--muted); font-size:11px; letter-spacing:0.1em;">
-      IUT d'Évry · Université Paris-Saclay · BUT GMP — SRV
-    </div>
-  </div>
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-home" onclick="goTo('home')">
+      <i class="ti ti-home"></i><span>Accueil</span>
+    </button>
+    <button class="nav-btn" id="nav-ideas" onclick="goTo('ideas')">
+      <i class="ti ti-bulb"></i><span>Idées</span>
+    </button>
+    <button class="nav-btn" id="nav-script" onclick="goTo('script')">
+      <i class="ti ti-script"></i><span>Script</span>
+    </button>
+    <button class="nav-btn" id="nav-package" onclick="goTo('package')">
+      <i class="ti ti-package"></i><span>Package</span>
+    </button>
+  </nav>
 </div>
 
-<footer>
-  <span>© 2025 Dyone ONKOUNI</span>
-  <span>BUT2 GMP · Simulation &amp; Réalité Virtuelle · Paris-Saclay</span>
-</footer>
-
 <script>
-  // Custom cursor
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  let mx = 0, my = 0, rx = 0, ry = 0;
-  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-  function animCursor() {
-    cursor.style.left = mx - 5 + 'px';
-    cursor.style.top = my - 5 + 'px';
-    rx += (mx - rx) * 0.12;
-    ry += (my - ry) * 0.12;
-    ring.style.left = rx - 18 + 'px';
-    ring.style.top = ry - 18 + 'px';
-    requestAnimationFrame(animCursor);
+// NAV
+const tabs = ['home','ideas','script','package'];
+function goTo(t) {
+  tabs.forEach(x => {
+    document.getElementById('sec-'+x).classList.toggle('active', x===t);
+    document.getElementById('nav-'+x).classList.toggle('active', x===t);
+  });
+  document.getElementById('main-scroll').scrollTo(0,0);
+}
+
+// CHAR COUNT
+function updateCount(id,cid) {
+  const el = document.getElementById(id);
+  document.getElementById(cid).textContent = el.value.length+'/200';
+}
+
+// CHIP GROUPS
+function initChips(groupId) {
+  document.getElementById(groupId).querySelectorAll('.chip').forEach(c => {
+    c.addEventListener('click', () => {
+      document.getElementById(groupId).querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
+      c.classList.add('on');
+    });
+  });
+}
+initChips('tone-group');
+initChips('dur-group');
+initChips('fmt-group');
+
+function getChip(groupId) {
+  const el = document.getElementById(groupId).querySelector('.chip.on');
+  return el ? el.dataset.v : '';
+}
+
+// PLATFORMS
+const plat = {yt:true, tk:true};
+function toggleP(p) {
+  plat[p] = !plat[p];
+  const btn = document.getElementById('p-'+p);
+  if(p==='yt') btn.className = 'plat-pill' + (plat.yt ? ' yt-on' : '');
+  else btn.className = 'plat-pill' + (plat.tk ? ' tk-on' : '');
+}
+
+// INSTALL PWA
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault(); deferredPrompt = e;
+  document.getElementById('install-btn').classList.add('show');
+});
+function installApp() {
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(() => {
+    deferredPrompt = null;
+    document.getElementById('install-btn').classList.remove('show');
+  });
+}
+
+// SERVICE WORKER
+if('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+
+// PROGRESS ANIMATION
+function startProgress(fillId, barId, ms) {
+  const bar = document.getElementById(barId);
+  const fill = document.getElementById(fillId);
+  bar.classList.add('show'); let w=0;
+  const iv = setInterval(()=>{ w=Math.min(w+2,90); fill.style.width=w+'%'; }, ms/45);
+  return { done: ()=>{ clearInterval(iv); fill.style.width='100%'; setTimeout(()=>{ bar.classList.remove('show'); fill.style.width='0%'; },500); } };
+}
+
+// CLAUDE API
+async function claude(prompt) {
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1000,
+      messages:[{role:'user',content:prompt}]
+    })
+  });
+  const d = await r.json();
+  return d.content?.[0]?.text || '';
+}
+
+function parseJSON(raw) {
+  return JSON.parse(raw.replace(/```json|```/g,'').trim());
+}
+
+// COPY
+function copyText(btn, text) {
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.innerHTML='<i class="ti ti-check"></i> Copié !';
+    setTimeout(()=>btn.innerHTML='<i class="ti ti-copy"></i> Copier',2000);
+  });
+}
+
+// ─── GENERATE IDEAS ───
+async function genIdeas() {
+  const subj = document.getElementById('i-subject').value.trim();
+  const niche = document.getElementById('i-niche').value;
+  if(!subj){ alert('Décrivez le sujet de votre short.'); return; }
+
+  const btn = document.getElementById('btn-ideas');
+  btn.disabled=true;
+  document.getElementById('ld-ideas').classList.add('show');
+  document.getElementById('ideas-out').innerHTML='';
+
+  const platStr = [plat.yt&&'YouTube Shorts', plat.tk&&'TikTok'].filter(Boolean).join(' et ');
+  const tone = getChip('tone-group');
+  const dur = getChip('dur-group');
+
+  const prompt = `Expert contenu viral ${platStr}. Génère 4 idées de shorts.
+Niche: ${niche||'générale'} | Sujet: ${subj} | Ton: ${tone} | Durée: ${dur}s
+
+JSON uniquement, sans markdown:
+{"ideas":[{"emoji":"...","title":"...","hook":"...","angle":"..."},{"emoji":"...","title":"...","hook":"...","angle":"..."},{"emoji":"...","title":"...","hook":"...","angle":"..."},{"emoji":"...","title":"...","hook":"...","angle":"..."}]}`;
+
+  try {
+    const raw = await claude(prompt);
+    const data = parseJSON(raw);
+    renderIdeas(data.ideas);
+  } catch(e) {
+    document.getElementById('ideas-out').innerHTML='<div style="color:#f55;font-size:14px;padding:12px 0">Erreur. Vérifiez votre connexion et réessayez.</div>';
   }
-  animCursor();
+  btn.disabled=false;
+  document.getElementById('ld-ideas').classList.remove('show');
+}
 
-  document.querySelectorAll('a, button, .skill-card, .tool-chip, .project-row, .quality-card').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursor.style.transform = 'scale(2)';
-      ring.style.transform = 'scale(1.4)';
-      ring.style.borderColor = 'rgba(0,229,180,0.6)';
-    });
-    el.addEventListener('mouseleave', () => {
-      cursor.style.transform = 'scale(1)';
-      ring.style.transform = 'scale(1)';
-      ring.style.borderColor = 'rgba(0,229,180,0.4)';
-    });
+function renderIdeas(ideas) {
+  const grid = document.createElement('div');
+  grid.className='idea-grid';
+  ideas.forEach(idea => {
+    const c = document.createElement('div');
+    c.className='idea-card';
+    c.innerHTML=`<span class="idea-emoji">${idea.emoji}</span><div class="idea-title">${idea.title}</div><div style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5">"${idea.hook}"</div><div class="idea-angle">↗ ${idea.angle}</div>`;
+    c.onclick=()=>{
+      document.querySelectorAll('.idea-card').forEach(x=>x.classList.remove('picked'));
+      c.classList.add('picked');
+      document.getElementById('s-subject').value=`${idea.title}\n\nHook: ${idea.hook}\nAngle: ${idea.angle}`;
+      setTimeout(()=>goTo('script'), 300);
+    };
+    grid.appendChild(c);
   });
+  const out = document.getElementById('ideas-out');
+  out.innerHTML='<p style="font-size:12px;color:var(--muted);margin-bottom:8px">Appuyez sur une idée pour créer le script ↓</p>';
+  out.appendChild(grid);
+}
 
-  // Animate skill bars on scroll
-  const bars = document.querySelectorAll('.skill-fill');
-  const widths = Array.from(bars).map(b => b.style.width);
-  bars.forEach(b => b.style.width = '0');
+// ─── GENERATE SCRIPT ───
+async function genScript() {
+  const subj = document.getElementById('s-subject').value.trim();
+  if(!subj){ alert('Entrez le sujet du script.'); return; }
 
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const idx = Array.from(bars).indexOf(entry.target);
-        setTimeout(() => { entry.target.style.width = widths[idx]; }, 100);
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.3 });
-  bars.forEach(b => observer.observe(b));
+  const btn = document.getElementById('btn-script');
+  btn.disabled=true;
+  document.getElementById('ld-script').classList.add('show');
+  document.getElementById('script-out').innerHTML='';
+  const prog = startProgress('pf-script','pr-script',4500);
 
-  // Fade in sections
-  const sections = document.querySelectorAll('section, #contact > div');
-  const secObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-      }
-    });
-  }, { threshold: 0.08 });
-  sections.forEach(s => {
-    s.style.opacity = '0';
-    s.style.transform = 'translateY(30px)';
-    s.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
-    secObserver.observe(s);
-  });
+  const dur = document.getElementById('s-dur').value;
+  const plat2 = document.getElementById('s-plat').value;
+  const fmt = getChip('fmt-group');
+  const inst = document.getElementById('s-inst').value;
+  const words = {30:80,45:120,60:160}[dur];
+  const platLabel = {both:'YouTube Shorts et TikTok',youtube:'YouTube Shorts',tiktok:'TikTok'}[plat2];
+
+  const prompt = `Scénariste expert ${platLabel}. Script ${dur}s (~${words} mots).
+Format: ${fmt} | Sujet: ${subj}${inst?'\nInstructions: '+inst:''}
+
+JSON uniquement:
+{"hook":"...","content":"...","cta":"...","voice_tips":"...","visuals":"..."}
+- hook: accroche 3-5s percutante
+- content: corps avec [PAUSE] et [EMPHASE]
+- cta: appel à l'action final
+- voice_tips: conseils voix off
+- visuals: 3 idées de visuels/transitions`;
+
+  try {
+    const raw = await claude(prompt);
+    const d = parseJSON(raw);
+    prog.done();
+    renderScript(d);
+  } catch(e) {
+    prog.done();
+    document.getElementById('script-out').innerHTML='<div style="color:#f55;font-size:14px;padding:12px 0">Erreur. Réessayez.</div>';
+  }
+  btn.disabled=false;
+  document.getElementById('ld-script').classList.remove('show');
+}
+
+function renderScript(d) {
+  const full = `🎬 HOOK\n${d.hook}\n\n📝 CONTENU\n${d.content}\n\n🚀 CTA\n${d.cta}\n\n🎙️ VOIX OFF\n${d.voice_tips}\n\n🎞️ VISUELS\n${d.visuals}`;
+  const content = d.content.replace(/\[PAUSE\]/g,'<span style="color:var(--accent2);font-weight:600">[PAUSE]</span>').replace(/\[EMPHASE\]/g,'<span style="color:var(--accent);font-weight:600">[EMPHASE]</span>');
+  document.getElementById('script-out').innerHTML=`
+  <div class="result-card">
+    <div class="result-header">
+      <span>📝 Script généré</span>
+      <button class="copy-btn" onclick="copyText(this,${JSON.stringify(full)})"><i class="ti ti-copy"></i> Copier</button>
+    </div>
+    <div class="result-body">
+      <div class="block-label">🎬 Hook (0–4s)</div>
+      <div class="block-text" style="font-size:16px;font-weight:600">${d.hook}</div>
+      <div class="block-label">📝 Corps du script</div>
+      <div class="block-text">${content}</div>
+      <div class="block-label">🚀 Call to action</div>
+      <div class="block-text">${d.cta}</div>
+      <div class="divider"></div>
+      <div class="block-label">🎙️ Conseils voix off</div>
+      <div class="block-muted">${d.voice_tips}</div>
+      <div class="block-label">🎞️ Visuels suggérés</div>
+      <div class="block-muted" style="margin-bottom:0">${d.visuals}</div>
+    </div>
+  </div>`;
+}
+
+// ─── GENERATE PACKAGE ───
+async function genPackage() {
+  const subj = document.getElementById('pk-subject').value.trim();
+  if(!subj){ alert('Décrivez le sujet de votre short.'); return; }
+
+  const btn = document.getElementById('btn-pkg');
+  btn.disabled=true;
+  document.getElementById('ld-pkg').classList.add('show');
+  document.getElementById('pkg-out').innerHTML='';
+  const prog = startProgress('pf-pkg','pr-pkg',6000);
+
+  const niche = document.getElementById('pk-niche').value;
+  const dur = document.getElementById('pk-dur').value;
+
+  const prompt = `Expert marketing contenu viral YouTube Shorts & TikTok.
+Package complet pour short ${dur}s. Niche: ${niche||'générale'} | Sujet: ${subj}
+
+JSON uniquement:
+{"title_yt":"...","title_tk":"...","script":{"hook":"...","content":"...","cta":"..."},"desc_yt":"...","desc_tk":"...","hashtags":["..."],"thumbnail":"...","post_time":"...","viral_tip":"..."}
+- title_yt: titre YouTube SEO max 70 chars avec emojis
+- title_tk: titre TikTok viral max 50 chars avec emojis
+- script: hook percutant, content avec coupures, cta
+- desc_yt: description YouTube ~150 mots SEO
+- desc_tk: description TikTok ~80 mots
+- hashtags: exactement 30 hashtags sans #
+- thumbnail: concept miniature YouTube
+- post_time: meilleurs moments poster
+- viral_tip: 1 conseil spécifique viralité`;
+
+  try {
+    const raw = await claude(prompt);
+    const d = parseJSON(raw);
+    prog.done();
+    renderPackage(d);
+  } catch(e) {
+    prog.done();
+    document.getElementById('pkg-out').innerHTML='<div style="color:#f55;font-size:14px;padding:12px 0">Erreur. Réessayez.</div>';
+  }
+  btn.disabled=false;
+  document.getElementById('ld-pkg').classList.remove('show');
+}
+
+function renderPackage(d) {
+  const scriptFull = `HOOK: ${d.script?.hook}\n\n${d.script?.content}\n\nCTA: ${d.script?.cta}`;
+  const htags = (d.hashtags||[]).map(h=>`<span class="tag">#${h}</span>`).join('');
+  document.getElementById('pkg-out').innerHTML=`
+  <div class="result-card" style="margin-top:14px">
+    <div class="result-header"><span>▶ YouTube Shorts</span>
+      <button class="copy-btn" onclick="copyText(this,${JSON.stringify(d.title_yt+'\n\n'+d.desc_yt)})"><i class="ti ti-copy"></i> Copier</button>
+    </div>
+    <div class="result-body">
+      <div class="block-label">Titre</div>
+      <div class="block-text" style="font-weight:600">${d.title_yt}</div>
+      <div class="block-label">Description</div>
+      <div class="block-muted">${d.desc_yt}</div>
+    </div>
+  </div>
+  <div class="result-card">
+    <div class="result-header"><span>♪ TikTok</span>
+      <button class="copy-btn" onclick="copyText(this,${JSON.stringify(d.title_tk+'\n\n'+d.desc_tk)})"><i class="ti ti-copy"></i> Copier</button>
+    </div>
+    <div class="result-body">
+      <div class="block-label">Titre</div>
+      <div class="block-text" style="font-weight:600">${d.title_tk}</div>
+      <div class="block-label">Description</div>
+      <div class="block-muted">${d.desc_tk}</div>
+    </div>
+  </div>
+  <div class="result-card">
+    <div class="result-header"><span>📝 Script</span>
+      <button class="copy-btn" onclick="copyText(this,${JSON.stringify(scriptFull)})"><i class="ti ti-copy"></i> Copier</button>
+    </div>
+    <div class="result-body">
+      <div class="block-label">🎬 Hook</div>
+      <div class="block-text" style="font-weight:600">${d.script?.hook}</div>
+      <div class="block-label">📝 Contenu</div>
+      <div class="block-text">${d.script?.content}</div>
+      <div class="block-label">🚀 CTA</div>
+      <div class="block-text" style="margin-bottom:0">${d.script?.cta}</div>
+    </div>
+  </div>
+  <div class="result-card">
+    <div class="result-header"><span># Hashtags (${(d.hashtags||[]).length})</span>
+      <button class="copy-btn" onclick="copyText(this,${JSON.stringify((d.hashtags||[]).map(h=>'#'+h).join(' '))})"><i class="ti ti-copy"></i> Copier</button>
+    </div>
+    <div class="result-body"><div class="tags-wrap">${htags}</div></div>
+  </div>
+  <div class="result-card">
+    <div class="result-body">
+      <div class="block-label">🖼️ Miniature YouTube</div>
+      <div class="block-muted">${d.thumbnail}</div>
+      <div class="block-label">⏰ Meilleur moment</div>
+      <div class="block-muted" style="margin-bottom:0">${d.post_time}</div>
+    </div>
+  </div>
+  <div class="tip-box">
+    <div class="block-label">🔥 Conseil viralité</div>
+    <div style="font-size:14px;line-height:1.7;color:var(--text)">${d.viral_tip}</div>
+  </div>`;
+}
 </script>
 </body>
 </html>
